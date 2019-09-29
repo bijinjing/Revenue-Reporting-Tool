@@ -1,20 +1,22 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var items = require('../database-mysql');
+var db = require('../database-mysql/index.js');
+
 
 var app = express();
-
-
-
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../react-client/dist'));
 app.get('/items', function (req, res) {
-  items.selectAll(function(err, data) {
-    if(err) {
-      res.sendStatus(500);
-    } else {
-      res.json(data);
-    }
-  });
+  console.log(req.body)
+  // db. getTransactions(req.body, (err, data) => {
+  //   if(err) {
+  //     res.sendStatus(500);
+  //   } else {
+  //     console.log(data)
+  //     res.json(data);
+  //   }
+  // });
+  res.send('ue')
 });
 
 app.listen(3002, function() {
