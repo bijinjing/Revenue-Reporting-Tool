@@ -12,26 +12,27 @@ const filters = ['0023', '0032', '0027', '0067','0018', '0456', '0436', '0467', 
 const newFilters = new Array(6).fill(0).map((num => {
   return Math.floor(Math.random()*10)
 })).join('')
-const randomWords = ['/#JPMorgn','/#4590!jkcash','/#USbank87mchange#/','wellsFargo/#','db#/78!','%67cashin#/']
+const randomWords = ['/JPMorgn/','/hjkjkcash/','/USbank87mchange/','/wellsFargo/','/dbhu!/','/cashin/']
 
 
-const download = function(connection,param, callback){
-  const y = param.y;
-  const m = param.m;
+const downloadData = function(connection,param, callback){
+  const y = Number(param.y);
+  const m = Number(param.m);
   const randomDate = function(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   }
   const values = [];
-  for(var i=0; i<5; i++){
+  for(var i=0; i<50; i++){
     let filterIndex = Math.floor(Math.random()*50);
     let otherIndex1 = Math.floor(Math.random()*6)
     let otherIndex2 = Math.floor(Math.random()*6)
     let existingMessage = randomWords[otherIndex1] + filters[filterIndex] + randomWords[otherIndex2];
-    let newMessage = randomWords[otherIndex1] + newFilters + randomWords[otherIndex2];
-    let newi = Math.floor(Math.random()* 5);
+    // let newMessage = randomWords[otherIndex1] + newFilters + randomWords[otherIndex2];
+    // let newi = Math.floor(Math.random()* 5);
     let amount = Math.floor(Math.random()*10000000) /100;
-    let description = (i === newi? newMessage : existingMessage);
-    let date = randomDate(new Date(y,m), new Date(y,m+1));
+    let description = existingMessage;
+    // let description = (i === newi? newMessage : existingMessage);
+    let date = randomDate(new Date(y,m-1), new Date(y,m));
     values.push([description, amount, date])
   }
   connection.query(message, [values], (err, results) => {
@@ -51,7 +52,6 @@ const download = function(connection,param, callback){
 //   }
 // })
 
-module.exports.download;
-
-
-
+module.exports = {
+  downloadData
+};

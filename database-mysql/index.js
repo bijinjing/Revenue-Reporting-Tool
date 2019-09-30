@@ -6,11 +6,10 @@ const connection = mysql.createConnection({
   database : 'Customer_transaction_summary'
 });
 
-const getTransactions = function(param, callback) {
-
+const getTransactions = (param, callback) => {
   let {y,m} = param;
   let selectMessage = `select * from transactions where date like '%${y}-${m}%'`;
-  download(connection,param,(err,result)=> {
+  download.downloadData(connection,param,(err,result)=> {
     if(err){
       callback(err)
     } else {
@@ -23,6 +22,29 @@ const getTransactions = function(param, callback) {
       })
     }
   })
+};
+
+const getIdentifiers = (param, callback) =>{
+  let selectMessage = `select * from identifiers where identifier = ${param}`;
+  connection.query(selectMessage, (err, data) => {
+    if(err){
+      callback(err)
+    } else {
+      callback(null, data)
+    }
+  });
+};
+
+const getCustomers = function(param, callback) {
+  let id = param[0].customer
+  let selectMessage = `select * from customers where id = ${id}`;
+  connection.query(selectMessage, (err, data) => {
+    if(err) {
+      callback(err, null);
+    } else {
+      callback(null, data);
+    }
+  });
 };
 
 const getGLs = function(callback) {
@@ -85,5 +107,7 @@ const addFilterToExistingCustomer = function(callback) {
 };
 
 module.exports = {
-  getTransactions
+  getTransactions,
+  getIdentifiers,
+  getCustomers
 }
