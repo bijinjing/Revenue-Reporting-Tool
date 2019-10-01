@@ -10,6 +10,7 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 
 
 app.get('/transactions', (req, res) =>{
+  console.log(req.query)
   db.getTransactions(req.query, (err, data) => {
     if(err) {
       res.sendStatus(500);
