@@ -9,26 +9,33 @@ const Body = styled.div`
   margin: 20px;
 `;
 
+const InputBox = styled.div`
+  display: flex;
+`;
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      targetYear:"07",
-      targetMonth:"2019",
-      transactions: []
+      year:"",
+      month:"",
+      transactions: [],
+      mappedTransactions:[]
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
+    this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
+    this.MappingloadHandler = this.MappingloadHandler.bind(this)
   }
 
   DownloadHandler() {
     let option = {
-      y:'2017',
-      m:'04'
+      y:this.state.year,
+      m:this.state.month
     };
 
-    $.get('/transactions',option)
+    $.get('/transactions', option)
      .done((data) => {
-        console.log('react data', data);
         this.setState({
           transactions: data
         })
@@ -39,11 +46,11 @@ class App extends React.Component {
   };
 
   MappingloadHandler() {
-    $.get('/transactions',option)
+    let transactions = this.state.transactions;
+    $.get('/mapping',{transactions})
      .done((data) => {
-        console.log('react data', data);
         this.setState({
-          transactions: data
+          mappedTransactions: data
         })
       })
      .catch((err) => {
@@ -51,8 +58,11 @@ class App extends React.Component {
       })
   }
 
-
-
+  ParameterInputHandler({target}){
+      this.setState({
+        [target.name]:target.value
+      })
+  }
 
   render () {
     {console.log('transaction',this.state.transactions)}
@@ -60,9 +70,17 @@ class App extends React.Component {
     <Body>
       <h3>Cash Transactions</h3>
       <div>
+        <InputBox>
+          <div>
+            <a>Year</a><input type = "text" name = "year" value ={this.state.year} onChange = {this.ParameterInputHandler}></input>
+          </div>
+          <div>
+            <a>Month</a><input type = "text" name = "month" value ={this.state.month} onChange = {this.ParameterInputHandler}></input>
+          </div>
+        </InputBox>
         <button onClick = {this.DownloadHandler}>Download</button>
-        <button onClick = {this.MappingHandler}>Mapping</button>
-        <Transactions transactions = {this.state.transactions}/>
+        <button onClick = {this.MappingloadHandler}>Mapping</button>
+        <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions}/>
         <button>Post Entry</button>
       </div>
     </Body>

@@ -10,7 +10,6 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 
 
 app.get('/transactions', (req, res) =>{
-  console.log(req.query)
   db.getTransactions(req.query, (err, data) => {
     if(err) {
       res.sendStatus(500);
@@ -21,21 +20,33 @@ app.get('/transactions', (req, res) =>{
 });
 
 app.get('/mapping', (req, res)=> {
-  let {description} = req.query;
-  let identifier = description.split('/')[2];
-  db.getIdentifiers(identifier, (err,customer) => {
-    if(err) {
-      res.sendStatus(500);
-    } else {
-      db.getCustomers(customer, (err, data) => {
-        if(err) {
-          res.sendStatus(500)
-        } else {
-          res.json(data)
-        }
-      })
-    }
+  let {transactions} = req.query;
+  let identifiers = transactions.map((transaction) => {
+    return 
   })
+  let mappingList = []
+  transactions.forEach((transaction,key) => {
+    let identifier = transaction.description.split('/')[2];
+    db.getIdentifiers(identifier, (err,customer) => {
+      if(err) {
+        res.sendStatus(500);
+      } else {
+        db.getCustomers(customer, (err, data) => {
+          if(err) {
+            res.sendStatus(500)
+          } else {
+            mappingList.push({
+              id:transaction.id,
+              customer: data.name,
+              feeRate:data.fee_rate
+            })
+          }
+        })
+      }
+    })
+  })
+  console.log(mappingList)
+  res.json(mappingList)
 })
 
 app.listen(PORT, function() {

@@ -9,15 +9,23 @@ const connection = mysql.createConnection({
 const getTransactions = (param, callback) => {
   let {y,m} = param;
   let selectMessage = `select * from transactions where date like '%${y}-${m}%'`;
-  download.downloadData(connection,param,(err,result)=> {
+  connection.query(selectMessage, (err,data) => {
     if(err){
       callback(err)
+    } else if(data.length > 0){
+      callback(null,data)
     } else {
-      connection.query(selectMessage, (err,data) => {
+      download.downloadData(connection,param,(err,result)=> {
         if(err){
           callback(err)
         } else {
-          callback(null, data)
+          connection.query(selectMessage, (err,data) => {
+            if(err){
+              callback(err)
+            } else {
+              callback(null, data)
+            }
+          })
         }
       })
     }

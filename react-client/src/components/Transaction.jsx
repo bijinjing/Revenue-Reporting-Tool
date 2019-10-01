@@ -37,7 +37,7 @@ const MappingData = styled.div`
   width: 50%;
 `;
 
-const Transaction = ({trx,id}) => (
+const Transaction = ({trx,id,mapping}) => (
   <TableRow>
     <BankData>
       <Data>{id}</Data>
@@ -46,9 +46,10 @@ const Transaction = ({trx,id}) => (
       <Data>{trx.date.split(" ")[0]}</Data>
     </BankData>
     <MappingData>
-      <Data>{""}</Data>
-      <Data>{""}</Data>
-      <Data>{""}</Data>
+      <Data>{mapping.customer}</Data>
+      <Data>{(mapping.feeRate * 100).toString()}</Data>
+      <Data>{trx.amount * mapping.feeRate}</Data>
+      <Data>{mapping.feeRate === 0? 0:'$' + (trx.amount * (1-mapping.feeRate)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
     </MappingData>
   </TableRow>
 )

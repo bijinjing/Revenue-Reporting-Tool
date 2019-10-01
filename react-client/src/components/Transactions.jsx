@@ -47,36 +47,28 @@ const MappingData = styled.div`
   width: 50%;
 `;
 
-const Transactions = ({transactions}) => {
-  console.log('PASS',transactions)
+const Transactions = ({transactions, mappedTransactions}) => {
   return (
     <Table>
       <TableHeader>
         <BankData>
           <Data>ID</Data>
           <Data>Description</Data>
-          <Data>Amount</Data>
+          <Data>Cash Received</Data>
           <Data>Date</Data>
         </BankData>
         <MappingData>
           <Data>Customer</Data>
-          <Data>Fee Rate</Data>
-          <Data>Revenue</Data>
+          <Data>Fee Rate (%)</Data>
+          <Data>Revenue Earned</Data>
+          <Data>Payable</Data>
         </MappingData>
       </TableHeader>
   { transactions.map((trx,key) => {
-      console.log('trx',trx)
-      return <Transaction trx={trx} id = {key+1}/>})}
+      return <Transaction trx={trx} id = {key+1} mapping={mappedTransactions.length>0?mappedTransactions[key]:{customer:"",feeRate:0}}/>})}
     </Table>
   )
 }
-
-
-  // <div>
-  //   <h4> List Component </h4>
-  //   There are { props.items.length } items.
-  //   { props.items.map(item => <ListItem item={item}/>)}
-  // </div>
 
 
 export default Transactions;
