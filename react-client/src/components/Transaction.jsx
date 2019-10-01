@@ -48,7 +48,7 @@ const Transaction = ({trx,id,mapping}) => (
     <MappingData>
       <Data>{mapping.customer}</Data>
       <Data>{(mapping.feeRate * 100).toString()}</Data>
-      <Data>{trx.amount * mapping.feeRate}</Data>
+      <Data>{'$' + (trx.amount * mapping.feeRate).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
       <Data>{mapping.feeRate === 0? 0:'$' + (trx.amount * (1-mapping.feeRate)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
     </MappingData>
   </TableRow>

@@ -33,6 +33,7 @@ const getTransactions = (param, callback) => {
 };
 
 const getIdentifiers = (param, callback) =>{
+
   let selectMessage = `select * from identifiers where identifier = ${param}`;
   connection.query(selectMessage, (err, data) => {
     if(err){
@@ -50,6 +51,7 @@ const getCustomers = function(param, callback) {
     if(err) {
       callback(err, null);
     } else {
+      console.log('para',data)
       callback(null, data);
     }
   });

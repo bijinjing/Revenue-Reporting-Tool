@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Transactions from './components/Transactions.jsx';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const Body = styled.div`
   width: 80%;
@@ -21,11 +22,13 @@ class App extends React.Component {
       year:"",
       month:"",
       transactions: [],
-      mappedTransactions:[]
+      mappedTransactions:[],
+      totalCash:0,
+      totalRevenue:0
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
-    this.MappingloadHandler = this.MappingloadHandler.bind(this)
+    this.MappingloadHandler = this.MappingloadHandler.bind(this);
   }
 
   DownloadHandler() {
@@ -36,7 +39,10 @@ class App extends React.Component {
 
     $.get('/transactions', option)
      .done((data) => {
+      console.log(data);
+        let totalCash = data.reduce((total,trx) => {return total + trx.amount},0)
         this.setState({
+          totalCash,
           transactions: data
         })
       })
@@ -46,15 +52,16 @@ class App extends React.Component {
   };
 
   MappingloadHandler() {
-    let transactions = this.state.transactions;
-    $.get('/mapping',{transactions})
-     .done((data) => {
+    let transactions = JSON.stringify(this.state.transactions);
+    axios.get('/mapping', {params: {transactions: transactions}})
+      .then((results) => {
+        console.log(results.data);
+        let totalRevenue = results.data.reduce((total,trx,index) => {return total + trx.feeRate * this.state.transactions[index].amount},0)
+        console.log('revenue',totalRevenue);
         this.setState({
-          mappedTransactions: data
+          totalRevenue,
+          mappedTransactions: results.data
         })
-      })
-     .catch((err) => {
-        console.log('err', err);
       })
   }
 
@@ -64,8 +71,14 @@ class App extends React.Component {
       })
   }
 
+
+  ConfirmHandler({target}){
+    this.setState({
+      [target.name]:target.value
+    })
+  }
+
   render () {
-    {console.log('transaction',this.state.transactions)}
     return (
     <Body>
       <h3>Cash Transactions</h3>
@@ -78,9 +91,9 @@ class App extends React.Component {
             <a>Month</a><input type = "text" name = "month" value ={this.state.month} onChange = {this.ParameterInputHandler}></input>
           </div>
         </InputBox>
-        <button onClick = {this.DownloadHandler}>Download</button>
-        <button onClick = {this.MappingloadHandler}>Mapping</button>
-        <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions}/>
+        <button onClick={this.DownloadHandler}>Download</button>
+        <button onClick={this.MappingloadHandler}>Mapping</button>
+        <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
         <button>Post Entry</button>
       </div>
     </Body>

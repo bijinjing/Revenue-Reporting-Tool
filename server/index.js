@@ -4,8 +4,9 @@ var db = require('../database-mysql/index.js');
 
 const PORT = 3002;
 var app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 
@@ -19,14 +20,14 @@ app.get('/transactions', (req, res) =>{
   })
 });
 
-app.get('/mapping', (req, res)=> {
-  let {transactions} = req.query;
-  let identifiers = transactions.map((transaction) => {
-    return 
-  })
+app.get('/mapping', (req, res, next)=> {
+  let { transactions } = req.query;
+  transactions = JSON.parse(transactions)
+  let lastIndex = transactions[transactions.length -1].id;
   let mappingList = []
   transactions.forEach((transaction,key) => {
     let identifier = transaction.description.split('/')[2];
+    let id = transaction.id
     db.getIdentifiers(identifier, (err,customer) => {
       if(err) {
         res.sendStatus(500);
@@ -37,16 +38,18 @@ app.get('/mapping', (req, res)=> {
           } else {
             mappingList.push({
               id:transaction.id,
-              customer: data.name,
-              feeRate:data.fee_rate
+              customer: data[0].name,
+              feeRate:data[0].fee_rate
             })
+            if(id === lastIndex){              
+              res.json(mappingList)
+            } 
           }
         })
       }
     })
   })
-  console.log(mappingList)
-  res.json(mappingList)
+  
 })
 
 app.listen(PORT, function() {

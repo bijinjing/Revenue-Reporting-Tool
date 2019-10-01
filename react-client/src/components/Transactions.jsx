@@ -12,6 +12,15 @@ const TableHeader = styled.div`
   flex-flow: row nowrap;
   white-space: normal;
 `;
+const TableButtom = styled.div`
+  display: flex;
+  font-weight: 700;
+  background-color: #f2f2f2;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  white-space: normal;
+`;
 
 const Table = styled.div`
   flex-flow: column nowrap;
@@ -47,7 +56,7 @@ const MappingData = styled.div`
   width: 50%;
 `;
 
-const Transactions = ({transactions, mappedTransactions}) => {
+const Transactions = ({transactions, mappedTransactions,totalCash, totalRevenue, CalculateTotal}) => {
   return (
     <Table>
       <TableHeader>
@@ -65,7 +74,21 @@ const Transactions = ({transactions, mappedTransactions}) => {
         </MappingData>
       </TableHeader>
   { transactions.map((trx,key) => {
-      return <Transaction trx={trx} id = {key+1} mapping={mappedTransactions.length>0?mappedTransactions[key]:{customer:"",feeRate:0}}/>})}
+      return <Transaction trx={trx} id={key + 1} mapping={mappedTransactions.length>0?mappedTransactions[key]:{customer:"",feeRate:0}}/>})}
+       <TableButtom>
+        <BankData>
+          <Data></Data>
+          <Data></Data>
+          <Data>{'$' + (totalCash).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
+          <Data></Data>
+        </BankData>
+        <MappingData>
+          <Data></Data>
+          <Data></Data>
+          <Data>{'$' + (totalRevenue).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
+          <Data>{'$' + (totalCash - totalRevenue).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
+        </MappingData>
+      </TableButtom>
     </Table>
   )
 }
