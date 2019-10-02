@@ -121,6 +121,14 @@ CREATE TABLE General_ledger (
     ON DELETE CASCADE
 );
 
+CREATE TABLE journal_Entry (
+  id int NOT NULL AUTO_INCREMENT,
+  GL int NOT NULL,
+  amount DECIMAL(50,12),
+  date varchar(50) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 
 
 

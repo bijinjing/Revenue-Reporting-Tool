@@ -51,14 +51,15 @@ const getCustomers = function(param, callback) {
     if(err) {
       callback(err, null);
     } else {
-      console.log('para',data)
       callback(null, data);
     }
   });
 };
 
-const getGLs = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
+const postGL = function(param, callback) {
+  console.log(param)
+  connection.query('INSERT INTO journal_Entry (GL, amount, date) VALUES ?', [param], (err, results) => {
+    console.log('hit','re',results,'er',err)
     if(err) {
       callback(err, null);
     } else {
@@ -67,8 +68,8 @@ const getGLs = function(callback) {
   });
 };
 
-const postGL = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
+const getGLs = function(callback) {
+  connection.query('SELECT * FROM GLs', function(err, results, fields) {
     if(err) {
       callback(err, null);
     } else {
@@ -76,6 +77,8 @@ const postGL = function(callback) {
     }
   });
 };
+
+
 const deleteGL = function(callback) {
   connection.query('SELECT * FROM items', function(err, results, fields) {
     if(err) {
@@ -119,5 +122,6 @@ const addFilterToExistingCustomer = function(callback) {
 module.exports = {
   getTransactions,
   getIdentifiers,
-  getCustomers
+  getCustomers,
+  postGL
 }

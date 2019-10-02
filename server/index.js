@@ -41,15 +41,29 @@ app.get('/mapping', (req, res, next)=> {
               customer: data[0].name,
               feeRate:data[0].fee_rate
             })
-            if(id === lastIndex){              
+            if(id === lastIndex){
               res.json(mappingList)
-            } 
+            }
           }
         })
       }
     })
   })
-  
+
+})
+
+app.post('/entry', (req, res, next)=> {
+  let { cash, revenue, date} = req.body.params;
+  let payable = revenue - cash;
+
+  let param = [[100,cash,date],[200,payable,date],[600, -revenue, date]]
+    db.postGL(param, (err,results) => {
+      if(err) {
+        res.sendStatus(500);
+      } else {
+        res.sendStatus(200);
+      }
+    })
 })
 
 app.listen(PORT, function() {

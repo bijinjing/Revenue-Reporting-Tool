@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Transactions from './components/Transactions.jsx';
+import JournalEntry from './components/JournalEntry.jsx';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -24,11 +25,13 @@ class App extends React.Component {
       transactions: [],
       mappedTransactions:[],
       totalCash:0,
-      totalRevenue:0
+      totalRevenue:0,
+      entryReady:false
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
+    this.PostEntryHandler = this.PostEntryHandler.bind(this)
   }
 
   DownloadHandler() {
@@ -43,7 +46,10 @@ class App extends React.Component {
         let totalCash = data.reduce((total,trx) => {return total + trx.amount},0)
         this.setState({
           totalCash,
-          transactions: data
+          transactions: data,
+          mappedTransactions:[],
+          totalRevenue:0,
+          entryReady:false
         })
       })
      .catch((err) => {
@@ -60,9 +66,23 @@ class App extends React.Component {
         console.log('revenue',totalRevenue);
         this.setState({
           totalRevenue,
-          mappedTransactions: results.data
+          mappedTransactions: results.data,
+          entryReady:true
         })
       })
+  }
+
+  PostEntryHandler() {
+    let fullDateArr = this.state.transactions[0].date.split(" ")[0].split("-")
+    let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
+    axios.post('/entry', {params: {date:entryDate,revenue: this.state.totalRevenue, cash: this.state.totalCash}})
+      .then((results) => {
+        console.log(results.data);
+        this.setState({
+          entryReady:false
+        })
+        })
+
   }
 
   ParameterInputHandler({target}){
@@ -94,7 +114,10 @@ class App extends React.Component {
         <button onClick={this.DownloadHandler}>Download</button>
         <button onClick={this.MappingloadHandler}>Mapping</button>
         <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
-        <button>Post Entry</button>
+        {this.state.entryReady && <div>
+          <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
+          <button onClick={this.PostEntryHandler}>Post Entry</button>
+        </div>}
       </div>
     </Body>
     )
