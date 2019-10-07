@@ -103,12 +103,13 @@ INSERT INTO GLs (id, name, category) values ('100', 'cash','asset');
 
 CREATE TABLE General_ledger (
   id int NOT NULL AUTO_INCREMENT,
-  ledger_id int NOT NULL,
+  entryId varchar(50) NOT NULL,
   transaction int NOT NULL,
   customer int NOT NULL,
+  postDate varchar(50) NOT NULL,
+  entryDate varchar(50) NOT NULL,
   GL int NOT NULL,
   amount DECIMAL(50,8),
-  date varchar(50) NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (transaction)
     REFERENCES transactions(id)
@@ -121,13 +122,6 @@ CREATE TABLE General_ledger (
     ON DELETE CASCADE
 );
 
-CREATE TABLE journal_Entry (
-  id int NOT NULL AUTO_INCREMENT,
-  GL int NOT NULL,
-  amount DECIMAL(50,12),
-  date varchar(50) NOT NULL,
-  PRIMARY KEY (id)
-);
 
 
 

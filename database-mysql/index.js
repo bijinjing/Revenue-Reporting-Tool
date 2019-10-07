@@ -33,7 +33,6 @@ const getTransactions = (param, callback) => {
 };
 
 const getIdentifiers = (param, callback) =>{
-
   let selectMessage = `select * from identifiers where identifier = ${param}`;
   connection.query(selectMessage, (err, data) => {
     if(err){
@@ -57,9 +56,8 @@ const getCustomers = function(param, callback) {
 };
 
 const postGL = function(param, callback) {
-  console.log(param)
-  connection.query('INSERT INTO journal_Entry (GL, amount, date) VALUES ?', [param], (err, results) => {
-    console.log('hit','re',results,'er',err)
+  let insertMessage = 'INSERT INTO General_ledger (entryId, transaction,customer,postDate, entryDate, GL, amount) VALUES ?'
+  connection.query(insertMessage, [param], (err, results) => {
     if(err) {
       callback(err, null);
     } else {
@@ -68,8 +66,10 @@ const postGL = function(param, callback) {
   });
 };
 
-const getGLs = function(callback) {
-  connection.query('SELECT * FROM GLs', function(err, results, fields) {
+const getGL = function(param, callback) {
+  let {filter, criteria} = param;
+  let selectMessage = `SELECT * FROM General_ledger where ${filter} = ${criteria}`
+  connection.query(selectMessage, (err, results) => {
     if(err) {
       callback(err, null);
     } else {

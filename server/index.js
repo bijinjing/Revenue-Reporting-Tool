@@ -1,9 +1,10 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var db = require('../database-mysql/index.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const db = require('../database-mysql/index.js');
+const uuidv1 = require('uuid/v1');
 
 const PORT = 3002;
-var app = express();
+const app = express();
 // app.use(bodyParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
@@ -32,12 +33,12 @@ app.get('/mapping', (req, res, next)=> {
     db.getIdentifiers(identifier, (err,customer) => {
       if(err) {
         res.sendStatus(500);
+        next()
       } else {
         db.getCustomers(customer, (err, data) => {
           if(err) {
             res.sendStatus(500)
           } else {
-            console.log(data)
             mappingList[i] = {
               customer: data[0].name,
               customerId:data[0].id,
@@ -88,32 +89,33 @@ app.get('/mapping', (req, res, next)=> {
 })
 
 app.post('/subLedger', (req, res, next)=> {
-  let { postDate, entryDate, transactions, mappedTransactions} = req.body.params;
-  let payable = revenue - cash;
+  let entryId = uuidv1();
+  let { transactions, mappedTransactions} = req.body.params;
+  let fullDateArr = Object.values(transactions)[0].date.split(" ")[0].split("-")
+  let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
+  let postDate = new Date();
+  let trxArr = Object.keys(transactions);
+  let lastIndex = trxArr.length - 1;
 
-  let param = [[100,cash,date],[200,payable,date],[600, -revenue, date]]
+  trxArr.forEach((id,key) => {
+    let {amount} = transactions[id];
+    let {revenue, payable, customerId} = mappedTransactions[id];
+    let param = [[entryId,id,customerId,postDate,entryDate,100,amount],[entryId,id,customerId,postDate,entryDate,200,payable],[entryId,id,customerId,postDate,entryDate,600, -revenue]]
+
     db.postGL(param, (err,results) => {
       if(err) {
+        console.log(err);
         res.sendStatus(500);
+        next();
       } else {
-        res.sendStatus(200);
+        if(lastIndex === key){
+          res.sendStatus(200);
+        }
       }
     })
+  })
 })
 
-app.post('/entry', (req, res, next)=> {
-  let { cash, revenue, date} = req.body.params;
-  let payable = revenue - cash;
-
-  let param = [[100,cash,date],[200,payable,date],[600, -revenue, date]]
-    db.postGL(param, (err,results) => {
-      if(err) {
-        res.sendStatus(500);
-      } else {
-        res.sendStatus(200);
-      }
-    })
-})
 
 app.listen(PORT, function() {
   console.log('listening on port 3002!');

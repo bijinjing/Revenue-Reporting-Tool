@@ -30,7 +30,7 @@ class App extends React.Component {
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
-    this.PostEntryHandler = this.PostEntryHandler.bind(this)
+    this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this)
   }
 
   DownloadHandler() {
@@ -41,8 +41,6 @@ class App extends React.Component {
 
     $.get('/transactions', option)
      .done((data) => {
-      console.log(data);
-        // let totalCash = data.reduce((total,trx) => {return total + trx.amount},0)
         let totalCash = 0;
         let transactions = {}
         data.forEach(({id,description, amount, date},repId) => {
@@ -80,7 +78,7 @@ class App extends React.Component {
           let payable = amount - revenue;
           totalRevenue += revenue;
           totalPayable += payable;
-          mappedTransactions[id] = {revenue, payable, customer,customerId, feeRate}
+          mappedTransactions[id] = {revenue, payable, customer, customerId, feeRate}
         })
 
         this.setState({
@@ -92,13 +90,8 @@ class App extends React.Component {
   }
 
   PostSubledgerHandler() {
-    let fullDateArr = this.state.transactions[0].date.split(" ")[0].split("-")
-    let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
-    let postDate = new Date(year, month, day);
     axios.post('/subLedger', {
       params: {
-                postDate,
-                entryDate,
                 transactions:this.state.transactions,
                 mappedTransactions:this.state.mappedTransactions
               }
@@ -111,17 +104,6 @@ class App extends React.Component {
       })
   }
 
-  PostEntryHandler() {
-    let fullDateArr = this.state.transactions[0].date.split(" ")[0].split("-")
-    let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
-    axios.post('/entry', {params: {date:entryDate,transactions: this.state.transactions, cash: this.state.totalCash,transactions:this.state.transactions }})
-      .then((results) => {
-        console.log(results.data);
-        this.setState({
-          entryReady:false
-        })
-      })
-  }
 
   ParameterInputHandler({target}){
       this.setState({
@@ -154,7 +136,7 @@ class App extends React.Component {
         <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
         {this.state.entryReady && <div>
           <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
-          <button onClick={this.PostEntryHandler}>Post Entry</button>
+          <button onClick={this.PostSubledgerHandler}>Post Entry</button>
         </div>}
       </div>
     </Body>
