@@ -23,11 +23,12 @@ app.get('/transactions', (req, res) =>{
 app.get('/mapping', (req, res, next)=> {
   let { transactions } = req.query;
   transactions = JSON.parse(transactions)
-  let lastIndex = transactions[transactions.length -1].id;
-  let mappingList = []
-  transactions.forEach((transaction,key) => {
+  let mappingList = {};
+  let trxKeyArr = Object.keys(transactions);
+  let length = trxKeyArr.length;
+  trxKeyArr.forEach((i,key) => {
+    let transaction = transactions[i]
     let identifier = transaction.description.split('/')[2];
-    let id = transaction.id
     db.getIdentifiers(identifier, (err,customer) => {
       if(err) {
         res.sendStatus(500);
@@ -36,12 +37,13 @@ app.get('/mapping', (req, res, next)=> {
           if(err) {
             res.sendStatus(500)
           } else {
-            mappingList.push({
-              id:transaction.id,
+            console.log(data)
+            mappingList[i] = {
               customer: data[0].name,
+              customerId:data[0].id,
               feeRate:data[0].fee_rate
-            })
-            if(id === lastIndex){
+            }
+            if(key === length-1){
               res.json(mappingList)
             }
           }
@@ -50,6 +52,53 @@ app.get('/mapping', (req, res, next)=> {
     })
   })
 
+  // let getMapping = () => {
+  //   return new Promise((resolve,reject) => {
+  //     db.getIdentifiers(identifier, (err, customer) => {
+  //       if(err) {
+  //         reject(err)
+  //       } else {
+  //         db.getCustomers(customer, (err, data) => {
+  //           if (err) {
+  //             reject(err)
+  //           } else {
+  //             resolve(data)
+  //           }
+  //         })
+  //       }
+  //     })
+  //   })
+  // }
+
+  // for(let key in transactions) {
+    // let transaction = transactions[key];
+    // let identifier = transaction.description.split('/')[2];
+  //   await getMapping()
+  //          .then((data) => {
+  //            mappingList[key] = {
+  //              customer:data[0].name,
+  //              feeRate:data[0].fee_rate
+  //            }
+  //          })
+  //          .catch((err) => {
+  //            res.sendStatus(500)
+  //          })
+
+
+})
+
+app.post('/subLedger', (req, res, next)=> {
+  let { postDate, entryDate, transactions, mappedTransactions} = req.body.params;
+  let payable = revenue - cash;
+
+  let param = [[100,cash,date],[200,payable,date],[600, -revenue, date]]
+    db.postGL(param, (err,results) => {
+      if(err) {
+        res.sendStatus(500);
+      } else {
+        res.sendStatus(200);
+      }
+    })
 })
 
 app.post('/entry', (req, res, next)=> {

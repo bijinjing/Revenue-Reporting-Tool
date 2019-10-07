@@ -37,10 +37,10 @@ const MappingData = styled.div`
   width: 50%;
 `;
 
-const Transaction = ({trx,id,mapping}) => (
+const Transaction = ({trx,mapping}) => (
   <TableRow>
     <BankData>
-      <Data>{id}</Data>
+      <Data>{trx.repId}</Data>
       <Data>{trx.description}</Data>
       <Data value = {trx.amount}>{'$' + (trx.amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
       <Data>{trx.date.split(" ")[0]}</Data>
@@ -48,8 +48,8 @@ const Transaction = ({trx,id,mapping}) => (
     <MappingData>
       <Data>{mapping.customer}</Data>
       <Data>{(mapping.feeRate * 100).toString()}</Data>
-      <Data>{'$' + (trx.amount * mapping.feeRate).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
-      <Data>{mapping.feeRate === 0? 0:'$' + (trx.amount * (1-mapping.feeRate)).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
+      <Data>{'$' + (mapping.revenue).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
+      <Data>{'$' + (mapping.payable).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
     </MappingData>
   </TableRow>
 )

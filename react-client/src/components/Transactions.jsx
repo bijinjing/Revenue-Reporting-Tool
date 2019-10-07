@@ -73,8 +73,8 @@ const Transactions = ({transactions, mappedTransactions,totalCash, totalRevenue,
           <Data>Payable</Data>
         </MappingData>
       </TableHeader>
-  { transactions.map((trx,key) => {
-      return <Transaction trx={trx} id={key + 1} mapping={mappedTransactions.length>0?mappedTransactions[key]:{customer:"",feeRate:0}}/>})}
+  { Object.keys(transactions).map((id,key) => {
+      return <Transaction trx={transactions[id]} mapping={mappedTransactions[id]?mappedTransactions[id]:{customer:"",feeRate:0,revenue:0,payable:0}}/>})}
        <TableButtom>
         <BankData>
           <Data></Data>

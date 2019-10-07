@@ -15,15 +15,14 @@ const InputBox = styled.div`
   display: flex;
 `;
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       year:"",
       month:"",
-      transactions: [],
-      mappedTransactions:[],
+      transactions: {},
+      mappedTransactions:{},
       totalCash:0,
       totalRevenue:0,
       entryReady:false
@@ -43,11 +42,18 @@ class App extends React.Component {
     $.get('/transactions', option)
      .done((data) => {
       console.log(data);
-        let totalCash = data.reduce((total,trx) => {return total + trx.amount},0)
+        // let totalCash = data.reduce((total,trx) => {return total + trx.amount},0)
+        let totalCash = 0;
+        let transactions = {}
+        data.forEach(({id,description, amount, date},repId) => {
+          repId += 1
+          transactions[id] = {repId, description, amount, date};
+          totalCash += amount;
+        })
         this.setState({
           totalCash,
-          transactions: data,
-          mappedTransactions:[],
+          transactions,
+          mappedTransactions:{},
           totalRevenue:0,
           entryReady:false
         })
@@ -61,13 +67,46 @@ class App extends React.Component {
     let transactions = JSON.stringify(this.state.transactions);
     axios.get('/mapping', {params: {transactions: transactions}})
       .then((results) => {
-        console.log(results.data);
-        let totalRevenue = results.data.reduce((total,trx,index) => {return total + trx.feeRate * this.state.transactions[index].amount},0)
-        console.log('revenue',totalRevenue);
+        let mappedTransactions = {}
+        let totalRevenue = 0;
+        let totalPayable = 0;
+        let mappingData = results.data
+        let keyArr = Object.keys(mappingData);
+
+        keyArr.forEach((id, key) => {
+          let {feeRate, customer, customerId} = mappingData[id]
+          let amount = this.state.transactions[id].amount;
+          let revenue = amount * feeRate;
+          let payable = amount - revenue;
+          totalRevenue += revenue;
+          totalPayable += payable;
+          mappedTransactions[id] = {revenue, payable, customer,customerId, feeRate}
+        })
+
         this.setState({
           totalRevenue,
-          mappedTransactions: results.data,
+          mappedTransactions,
           entryReady:true
+        })
+      })
+  }
+
+  PostSubledgerHandler() {
+    let fullDateArr = this.state.transactions[0].date.split(" ")[0].split("-")
+    let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
+    let postDate = new Date(year, month, day);
+    axios.post('/subLedger', {
+      params: {
+                postDate,
+                entryDate,
+                transactions:this.state.transactions,
+                mappedTransactions:this.state.mappedTransactions
+              }
+    })
+      .then((results) => {
+        console.log(results.data);
+        this.setState({
+          entryReady:false
         })
       })
   }
@@ -75,14 +114,13 @@ class App extends React.Component {
   PostEntryHandler() {
     let fullDateArr = this.state.transactions[0].date.split(" ")[0].split("-")
     let entryDate = fullDateArr[0] + "-"+ fullDateArr[1];
-    axios.post('/entry', {params: {date:entryDate,revenue: this.state.totalRevenue, cash: this.state.totalCash}})
+    axios.post('/entry', {params: {date:entryDate,transactions: this.state.transactions, cash: this.state.totalCash,transactions:this.state.transactions }})
       .then((results) => {
         console.log(results.data);
         this.setState({
           entryReady:false
         })
-        })
-
+      })
   }
 
   ParameterInputHandler({target}){
