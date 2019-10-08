@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Transactions from './components/Transactions.jsx';
 import JournalEntry from './components/JournalEntry.jsx';
+import Customer from './components/Customer.jsx';
+import SelectForm from './components/SelectForm.jsx';
 import styled from 'styled-components';
 import axios from 'axios';
+
 
 const Body = styled.div`
   width: 80%;
@@ -25,12 +28,30 @@ class App extends React.Component {
       mappedTransactions:{},
       totalCash:0,
       totalRevenue:0,
-      entryReady:false
+      entryReady:false,
+      customers:[],
+      customer:"",
+      type:"",
+      report:""
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
     this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this)
+  }
+
+  componentDidMount(){
+    axios.get('/customer', {
+    })
+      .then((results) => {
+        let customers = results.data.map((item) => {
+          return item.name
+        })
+        customers.unshift("All")
+        this.setState({
+          customers
+        })
+      })
   }
 
   DownloadHandler() {
@@ -111,6 +132,27 @@ class App extends React.Component {
       })
   }
 
+  ReportHandler({target}){
+      axios.get('/report', {
+      params: {
+                year:this.state.year,
+                month:this.state.month,
+                customer:this.state.customer,
+                type:this.state.type
+              }
+    })
+      .then((results) => {
+        console.log(results.data);
+        this.setState({
+          entryReady:false
+        })
+      })
+     
+      this.setState({
+        [target.name]:target.value
+      })
+  }
+
 
   ConfirmHandler({target}){
     this.setState({
@@ -125,14 +167,28 @@ class App extends React.Component {
       <div>
         <InputBox>
           <div>
-            <a>Year</a><input type = "text" name = "year" value ={this.state.year} onChange = {this.ParameterInputHandler}></input>
+            <a>Year</a>
+            {/* <input type = "text" name = "year" value ={this.state.year} onChange = {this.ParameterInputHandler}></input> */}
+            <SelectForm name = {'year'} listing={[2019, 2018, 2017, 2016]} value = {this.state.year} handler = {this.ParameterInputHandler}/>
+         </div>
+          <div>
+            <a>Month</a>
+            {/* <input type = "text" name = "month" value ={this.state.month} onChange = {this.ParameterInputHandler}></input> */}
+            <SelectForm name = {'month'} listing={['01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
           </div>
           <div>
-            <a>Month</a><input type = "text" name = "month" value ={this.state.month} onChange = {this.ParameterInputHandler}></input>
+            <a>Customer Name</a><SelectForm name = {'Customers'} value = {this.state.customer} listing={this.state.customers}/>
+          </div>
+          <div>
+            <a>Type</a><SelectForm name={'report'} value = {this.state.report} handler = {this.ParameterInputHandler} listing={['revenue', 'cash','accounts payable']}/>
           </div>
         </InputBox>
+
+        <a>Book a Entry</a>
         <button onClick={this.DownloadHandler}>Download</button>
         <button onClick={this.MappingloadHandler}>Mapping</button>
+        <a>Generate Report</a>
+        <button onClick={this.ReportHandler}>Here</button>
         <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
         {this.state.entryReady && <div>
           <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>

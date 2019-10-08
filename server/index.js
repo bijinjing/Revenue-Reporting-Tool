@@ -10,6 +10,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../react-client/dist'));
 
+app.get('/customer', (req, res) =>{
+  db.getCustomers([{customer:"all"}], (err, data) => {
+    if(err) {
+      res.sendStatus(500);
+    } else {
+      res.json(data);
+    }
+  })
+});
 
 app.get('/transactions', (req, res) =>{
   db.getTransactions(req.query, (err, data) => {
@@ -53,37 +62,7 @@ app.get('/mapping', (req, res, next)=> {
     })
   })
 
-  // let getMapping = () => {
-  //   return new Promise((resolve,reject) => {
-  //     db.getIdentifiers(identifier, (err, customer) => {
-  //       if(err) {
-  //         reject(err)
-  //       } else {
-  //         db.getCustomers(customer, (err, data) => {
-  //           if (err) {
-  //             reject(err)
-  //           } else {
-  //             resolve(data)
-  //           }
-  //         })
-  //       }
-  //     })
-  //   })
-  // }
 
-  // for(let key in transactions) {
-    // let transaction = transactions[key];
-    // let identifier = transaction.description.split('/')[2];
-  //   await getMapping()
-  //          .then((data) => {
-  //            mappingList[key] = {
-  //              customer:data[0].name,
-  //              feeRate:data[0].fee_rate
-  //            }
-  //          })
-  //          .catch((err) => {
-  //            res.sendStatus(500)
-  //          })
 
 
 })
@@ -122,3 +101,34 @@ app.listen(PORT, function() {
 });
 
 
+  // let getMapping = () => {
+  //   return new Promise((resolve,reject) => {
+  //     db.getIdentifiers(identifier, (err, customer) => {
+  //       if(err) {
+  //         reject(err)
+  //       } else {
+  //         db.getCustomers(customer, (err, data) => {
+  //           if (err) {
+  //             reject(err)
+  //           } else {
+  //             resolve(data)
+  //           }
+  //         })
+  //       }
+  //     })
+  //   })
+  // }
+
+  // for(let key in transactions) {
+    // let transaction = transactions[key];
+    // let identifier = transaction.description.split('/')[2];
+  //   await getMapping()
+  //          .then((data) => {
+  //            mappingList[key] = {
+  //              customer:data[0].name,
+  //              feeRate:data[0].fee_rate
+  //            }
+  //          })
+  //          .catch((err) => {
+  //            res.sendStatus(500)
+  //          })

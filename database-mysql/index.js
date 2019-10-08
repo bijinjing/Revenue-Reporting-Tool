@@ -44,8 +44,15 @@ const getIdentifiers = (param, callback) =>{
 };
 
 const getCustomers = function(param, callback) {
-  let id = param[0].customer
-  let selectMessage = `select * from customers where id = ${id}`;
+  let id = param[0].customer;
+  let selectMessage
+  if(id === "all") {
+    selectMessage = `select * from customers`;
+  } else {
+    selectMessage = `select * from customers where id = ${id}`;
+  }
+  console.log(selectMessage)
+
   connection.query(selectMessage, (err, data) => {
     if(err) {
       callback(err, null);
@@ -78,7 +85,7 @@ const getGL = function(param, callback) {
   });
 };
 
-
+//update
 const deleteGL = function(callback) {
   connection.query('SELECT * FROM items', function(err, results, fields) {
     if(err) {
@@ -89,6 +96,7 @@ const deleteGL = function(callback) {
   });
 };
 
+//update
 const updateGL = function(callback) {
   connection.query('SELECT * FROM items', function(err, results, fields) {
     if(err) {
@@ -99,6 +107,7 @@ const updateGL = function(callback) {
   });
 };
 
+//update
 const addCustomer = function(callback) {
   connection.query('SELECT * FROM items', function(err, results, fields) {
     if(err) {
@@ -109,6 +118,7 @@ const addCustomer = function(callback) {
   });
 };
 
+//update
 const addFilterToExistingCustomer = function(callback) {
   connection.query('SELECT * FROM items', function(err, results, fields) {
     if(err) {
