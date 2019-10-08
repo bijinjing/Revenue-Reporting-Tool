@@ -61,10 +61,6 @@ app.get('/mapping', (req, res, next)=> {
       }
     })
   })
-
-
-
-
 })
 
 app.post('/subLedger', (req, res, next)=> {
@@ -94,6 +90,59 @@ app.post('/subLedger', (req, res, next)=> {
     })
   })
 })
+
+app.get('/report', (req, res) =>{
+  let param = Object.assign({}, req.query);
+  for(var key in param){
+    if(param[key].length === 0 || param[key] === ""){
+      delete param[key]
+    }
+  };
+
+  if(param.GL){
+    param.GL = param.type;
+    delete param.type;
+  }
+  // if(param.type) {
+  //   switch (param.type) {
+  //     case 'Revenue':
+  //       param.GL = 600;
+  //       delete param.type;
+  //       break;
+  //     case 'Cash':
+  //       param.GL = 100;
+  //       delete param.type;
+  //       break
+  //     case 'Accounts Payable':
+  //       param.GL = 200;
+  //       delete param.type;
+  //       break;
+  //   }
+  // }
+
+  if(param.month && param.year){
+     param.entryDate = param.year.toString() + '-' + param.month.toString();
+     delete param.month
+     delete param.year
+  } else if(param.month){
+     param.entryDate = '2019-' + param.month.toString();
+     delete param.month
+  } else if(param.year){
+     param.entryDate = param.year.toString();
+     delete param.year
+  } else (
+     param.entryDate = '2019-09'
+  )
+
+  db.getGL([param], (err, data) => {
+    if(err) {
+      res.sendStatus(500);
+    } else {
+      console.log(data)
+      res.json(data);
+    }
+  })
+});
 
 
 app.listen(PORT, function() {

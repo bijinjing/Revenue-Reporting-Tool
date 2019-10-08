@@ -46,12 +46,11 @@ const getIdentifiers = (param, callback) =>{
 const getCustomers = function(param, callback) {
   let id = param[0].customer;
   let selectMessage
-  if(id === "all") {
+  if(id === ""||id === "-") {
     selectMessage = `select * from customers`;
   } else {
     selectMessage = `select * from customers where id = ${id}`;
   }
-  console.log(selectMessage)
 
   connection.query(selectMessage, (err, data) => {
     if(err) {

@@ -32,12 +32,13 @@ class App extends React.Component {
       customers:[],
       customer:"",
       type:"",
-      report:""
+      report:[]
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
-    this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this)
+    this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this);
+    this.ReportHandler = this.ReportHandler.bind(this)
   }
 
   componentDidMount(){
@@ -47,7 +48,7 @@ class App extends React.Component {
         let customers = results.data.map((item) => {
           return item.name
         })
-        customers.unshift("All")
+        customers.unshift("-")
         this.setState({
           customers
         })
@@ -127,6 +128,7 @@ class App extends React.Component {
 
 
   ParameterInputHandler({target}){
+    console.log(target.name,target.value)
       this.setState({
         [target.name]:target.value
       })
@@ -144,13 +146,10 @@ class App extends React.Component {
       .then((results) => {
         console.log(results.data);
         this.setState({
-          entryReady:false
+          report:result.data
         })
       })
-     
-      this.setState({
-        [target.name]:target.value
-      })
+
   }
 
 
@@ -167,20 +166,16 @@ class App extends React.Component {
       <div>
         <InputBox>
           <div>
-            <a>Year</a>
-            {/* <input type = "text" name = "year" value ={this.state.year} onChange = {this.ParameterInputHandler}></input> */}
-            <SelectForm name = {'year'} listing={[2019, 2018, 2017, 2016]} value = {this.state.year} handler = {this.ParameterInputHandler}/>
-         </div>
-          <div>
-            <a>Month</a>
-            {/* <input type = "text" name = "month" value ={this.state.month} onChange = {this.ParameterInputHandler}></input> */}
-            <SelectForm name = {'month'} listing={['01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
+            <a>Starting Year</a><SelectForm name = {'year'} listing={['-', '2019', '2018', '2017', '2016']} value = {this.state.year} handler = {this.ParameterInputHandler}/>
           </div>
           <div>
-            <a>Customer Name</a><SelectForm name = {'Customers'} value = {this.state.customer} listing={this.state.customers}/>
+            <a>Starting Month</a><SelectForm name = {'month'} listing={['-','01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
           </div>
           <div>
-            <a>Type</a><SelectForm name={'report'} value = {this.state.report} handler = {this.ParameterInputHandler} listing={['revenue', 'cash','accounts payable']}/>
+            <a>Customer Name</a><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
+          </div>
+          <div>
+            <a>Type</a><SelectForm name={'type'} value = {this.state.report} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
           </div>
         </InputBox>
 
@@ -189,6 +184,7 @@ class App extends React.Component {
         <button onClick={this.MappingloadHandler}>Mapping</button>
         <a>Generate Report</a>
         <button onClick={this.ReportHandler}>Here</button>
+
         <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
         {this.state.entryReady && <div>
           <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
