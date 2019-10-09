@@ -49,7 +49,7 @@ app.get('/mapping', (req, res, next)=> {
             res.sendStatus(500)
           } else {
             mappingList[i] = {
-              customer: data[0].name,
+              customer: data[0].customerName,
               customerId:data[0].id,
               feeRate:data[0].fee_rate
             }

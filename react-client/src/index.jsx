@@ -49,7 +49,7 @@ class App extends React.Component {
     })
       .then((results) => {
         let customers = results.data.map((item) => {
-          return item.name
+          return item.customerName
         })
         customers.unshift("-")
         this.setState({
@@ -193,18 +193,18 @@ class App extends React.Component {
         <button onClick={this.MappingloadHandler}>Mapping</button>
         <a>Generate Report</a>
         <button onClick={this.ReportHandler}>Here</button>
-        
 
-        { this.state.entryStatus &&<Transactions 
-          transactions = {this.state.transactions} 
-          mappedTransactions = {this.state.mappedTransactions} 
-          totalCash={this.state.totalCash} 
-          totalRevenue={this.state.totalRevenue} 
+
+        { this.state.entryStatus &&<Transactions
+          transactions = {this.state.transactions}
+          mappedTransactions = {this.state.mappedTransactions}
+          totalCash={this.state.totalCash}
+          totalRevenue={this.state.totalRevenue}
           CalculateTotal={this.TotalCalculateHandler}
           />}
 
-        {this.state.reportStatus &&<Reports 
-          report = {this.state.report}  
+        {this.state.reportStatus &&<Reports
+          report = {this.state.report}
           CalculateTotal={this.TotalCalculateHandler}
           />}
 

@@ -12,7 +12,7 @@ CREATE TABLE transactions (
 
 CREATE TABLE customers (
   id int NOT NULL AUTO_INCREMENT,
-  name varchar(50) NOT NULL,
+  customerName varchar(50) NOT NULL,
   fee_rate DECIMAL(4,4),
   PRIMARY KEY (id)
 );

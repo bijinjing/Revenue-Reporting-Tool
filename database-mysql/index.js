@@ -82,10 +82,10 @@ const getGL = function(param, callback) {
     clause += ` AND GLs.name = '${param.type}'`
   };
 
-  let selectMessage = `SELECT customers.name, GLs.name, General_ledger.entryDate,sum(General_ledger.amount) FROM General_ledger 
-      INNER JOIN customers ON customers.id = General_ledger.customer 
+  let selectMessage = `SELECT customers.customerName, GLs.name, General_ledger.entryDate,sum(General_ledger.amount) FROM General_ledger
+      INNER JOIN customers ON customers.id = General_ledger.customer
       INNER JOIN GLs ON GLs.id = General_ledger.GL
-      WHERE ${clause} GROUP BY customers.name, General_ledger.entryDate, GLs.name;`
+      WHERE ${clause} GROUP BY customers.customerName, General_ledger.entryDate, GLs.name;`
 
   console.log(selectMessage)
   connection.query(selectMessage, (err, results) => {

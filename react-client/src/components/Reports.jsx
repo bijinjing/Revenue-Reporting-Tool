@@ -58,18 +58,20 @@ const MappingData = styled.div`
 const Line = ({line,id}) => (
         (<BankData>
           <Data>{id}</Data>
+          <Data>{line.customerName}</Data>
           <Data>{line.name}</Data>
           <Data>{line.entryDate}</Data>
           <Data>{line['sum(General_ledger.amount)']}</Data>
         </BankData>)
         )
 
-const Reports = ({report}) => { 
+const Reports = ({report}) => {
   return (
     <Table>
       <TableHeader>
         <BankData>
           <Data>ID</Data>
+          <Data>Customer</Data>
           <Data>Type</Data>
           <Data>Month</Data>
           <Data>Amount</Data>
