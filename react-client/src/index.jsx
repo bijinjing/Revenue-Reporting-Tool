@@ -34,7 +34,7 @@ class App extends React.Component {
       type:"",
       report:[],
       reportStatus:false,
-      entryStatus:true,
+      entryStatus:false,
       entryReady:false
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
@@ -78,7 +78,8 @@ class App extends React.Component {
           mappedTransactions:{},
           totalRevenue:0,
           entryReady:false,
-          entryStatus:true
+          entryStatus:true,
+          reportStatus:false
         })
       })
      .catch((err) => {
@@ -109,7 +110,9 @@ class App extends React.Component {
         this.setState({
           totalRevenue,
           mappedTransactions,
-          entryReady:true
+          entryReady:true,
+          entryStatus:true,
+          reportStatus:false
         })
       })
   }
@@ -147,14 +150,15 @@ class App extends React.Component {
               }
     })
       .then((results) => {
-        console.log(results.data);
         if(results.data.length === 0){
           alert('No data avaiable, please update the filters!')
         } else {
           this.setState({
             report:results.data,
             reportStatus:true,
-            entryStatus:false
+            entryStatus:false,
+            entryReady:false
+
           })
         }
       })

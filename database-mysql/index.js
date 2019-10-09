@@ -76,7 +76,7 @@ const getGL = function(param, callback) {
   param = param[0];
   let clause = `General_ledger.entryDate like '%${param.entryDate}%'`;
   if(param.customer){
-    clause += ` AND customers.name = '${param.customer}'`
+    clause += ` AND customers.customerName = '${param.customer}'`
   };
   if(param.type){
     clause += ` AND GLs.name = '${param.type}'`

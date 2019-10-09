@@ -56,14 +56,16 @@ const MappingData = styled.div`
 `;
 
 const Line = ({line,id}) => (
-        (<BankData>
-          <Data>{id}</Data>
-          <Data>{line.customerName}</Data>
-          <Data>{line.name}</Data>
-          <Data>{line.entryDate}</Data>
-          <Data>{line['sum(General_ledger.amount)']}</Data>
-        </BankData>)
-        )
+  (<BankData>
+    <Data>{id}</Data>
+    <Data>{line.customerName}</Data>
+    <Data>{line.name}</Data>
+    <Data>{line.entryDate}</Data>
+    {line.name === "revenue"?<Data>{'$' + (-line['sum(General_ledger.amount)']).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>:
+    <Data>{'$' + (line['sum(General_ledger.amount)']).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>}
+  </BankData>
+  )
+)
 
 const Reports = ({report}) => {
   return (
