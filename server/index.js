@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.get('/customer', (req, res) =>{
-  db.getCustomers([{customer:"all"}], (err, data) => {
+  db.getCustomers([{customer:"-"}], (err, data) => {
     if(err) {
       res.sendStatus(500);
     } else {
@@ -94,31 +94,10 @@ app.post('/subLedger', (req, res, next)=> {
 app.get('/report', (req, res) =>{
   let param = Object.assign({}, req.query);
   for(var key in param){
-    if(param[key].length === 0 || param[key] === ""){
+    if(param[key].length === 0 || param[key] === "-"){
       delete param[key]
     }
   };
-
-  if(param.GL){
-    param.GL = param.type;
-    delete param.type;
-  }
-  // if(param.type) {
-  //   switch (param.type) {
-  //     case 'Revenue':
-  //       param.GL = 600;
-  //       delete param.type;
-  //       break;
-  //     case 'Cash':
-  //       param.GL = 100;
-  //       delete param.type;
-  //       break
-  //     case 'Accounts Payable':
-  //       param.GL = 200;
-  //       delete param.type;
-  //       break;
-  //   }
-  // }
 
   if(param.month && param.year){
      param.entryDate = param.year.toString() + '-' + param.month.toString();
@@ -138,8 +117,12 @@ app.get('/report', (req, res) =>{
     if(err) {
       res.sendStatus(500);
     } else {
+      if(data.length === 0){
+        res.send("No data avaiable")
+      } else {
+        res.json(data);
+      }
       console.log(data)
-      res.json(data);
     }
   })
 });
@@ -181,3 +164,20 @@ app.listen(PORT, function() {
   //          .catch((err) => {
   //            res.sendStatus(500)
   //          })
+
+    // if(param.type) {
+  //   switch (param.type) {
+  //     case 'Revenue':
+  //       param.GL = 600;
+  //       delete param.type;
+  //       break;
+  //     case 'Cash':
+  //       param.GL = 100;
+  //       delete param.type;
+  //       break
+  //     case 'Accounts Payable':
+  //       param.GL = 200;
+  //       delete param.type;
+  //       break;
+  //   }
+  // }

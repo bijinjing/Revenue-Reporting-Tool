@@ -128,7 +128,7 @@ class App extends React.Component {
 
 
   ParameterInputHandler({target}){
-    console.log(target.name,target.value)
+    // console.log(target.name,target.value)
       this.setState({
         [target.name]:target.value
       })
@@ -175,7 +175,7 @@ class App extends React.Component {
             <a>Customer Name</a><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
           </div>
           <div>
-            <a>Type</a><SelectForm name={'type'} value = {this.state.report} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
+            <a>Type</a><SelectForm name={'type'} value = {this.state.type} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
           </div>
         </InputBox>
 
