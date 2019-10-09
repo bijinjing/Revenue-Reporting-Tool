@@ -117,11 +117,7 @@ app.get('/report', (req, res) =>{
     if(err) {
       res.sendStatus(500);
     } else {
-      if(data.length === 0){
-        res.send("No data avaiable")
-      } else {
-        res.json(data);
-      }
+      res.json(data);
       console.log(data)
     }
   })

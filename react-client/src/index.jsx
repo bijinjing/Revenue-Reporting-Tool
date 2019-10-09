@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Transactions from './components/Transactions.jsx';
+import Reports from './components/Reports.jsx';
 import JournalEntry from './components/JournalEntry.jsx';
 import Customer from './components/Customer.jsx';
 import SelectForm from './components/SelectForm.jsx';
@@ -28,11 +29,13 @@ class App extends React.Component {
       mappedTransactions:{},
       totalCash:0,
       totalRevenue:0,
-      entryReady:false,
       customers:[],
       customer:"",
       type:"",
-      report:[]
+      report:[],
+      reportStatus:false,
+      entryStatus:true,
+      entryReady:false
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
@@ -60,7 +63,6 @@ class App extends React.Component {
       y:this.state.year,
       m:this.state.month
     };
-
     $.get('/transactions', option)
      .done((data) => {
         let totalCash = 0;
@@ -75,7 +77,8 @@ class App extends React.Component {
           transactions,
           mappedTransactions:{},
           totalRevenue:0,
-          entryReady:false
+          entryReady:false,
+          entryStatus:true
         })
       })
      .catch((err) => {
@@ -145,9 +148,15 @@ class App extends React.Component {
     })
       .then((results) => {
         console.log(results.data);
-        this.setState({
-          report:result.data
-        })
+        if(results.data.length === 0){
+          alert('No data avaiable, please update the filters!')
+        } else {
+          this.setState({
+            report:results.data,
+            reportStatus:true,
+            entryStatus:false
+          })
+        }
       })
 
   }
@@ -184,8 +193,21 @@ class App extends React.Component {
         <button onClick={this.MappingloadHandler}>Mapping</button>
         <a>Generate Report</a>
         <button onClick={this.ReportHandler}>Here</button>
+        
 
-        <Transactions transactions = {this.state.transactions} mappedTransactions = {this.state.mappedTransactions} totalCash={this.state.totalCash} totalRevenue={this.state.totalRevenue} CalculateTotal={this.TotalCalculateHandler}/>
+        { this.state.entryStatus &&<Transactions 
+          transactions = {this.state.transactions} 
+          mappedTransactions = {this.state.mappedTransactions} 
+          totalCash={this.state.totalCash} 
+          totalRevenue={this.state.totalRevenue} 
+          CalculateTotal={this.TotalCalculateHandler}
+          />}
+
+        {this.state.reportStatus &&<Reports 
+          report = {this.state.report}  
+          CalculateTotal={this.TotalCalculateHandler}
+          />}
+
         {this.state.entryReady && <div>
           <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
           <button onClick={this.PostSubledgerHandler}>Post Entry</button>
