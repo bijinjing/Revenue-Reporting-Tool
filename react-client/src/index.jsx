@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import Transactions from './components/Transactions.jsx';
+import Charts from './components/Charts.jsx';
 import Reports from './components/Reports.jsx';
 import JournalEntry from './components/JournalEntry.jsx';
 import Customer from './components/Customer.jsx';
@@ -35,13 +36,16 @@ class App extends React.Component {
       report:[],
       reportStatus:false,
       entryStatus:false,
-      entryReady:false
+      entryReady:false,
+      chartReady:false,
+      chartStatus:false
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
     this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this);
-    this.ReportHandler = this.ReportHandler.bind(this)
+    this.ReportHandler = this.ReportHandler.bind(this);
+    this.ChartHandler = this.ChartHandler.bind(this)
   }
 
   componentDidMount(){
@@ -79,7 +83,9 @@ class App extends React.Component {
           totalRevenue:0,
           entryReady:false,
           entryStatus:true,
-          reportStatus:false
+          reportStatus:false,
+          chartReady:false,
+          chartStatus:false
         })
       })
      .catch((err) => {
@@ -112,7 +118,9 @@ class App extends React.Component {
           mappedTransactions,
           entryReady:true,
           entryStatus:true,
-          reportStatus:false
+          reportStatus:false,
+          chartReady:false,
+          chartStatus:false
         })
       })
   }
@@ -133,12 +141,18 @@ class App extends React.Component {
   }
 
 
-  ParameterInputHandler({target}){
-    // console.log(target.name,target.value)
-      this.setState({
-        [target.name]:target.value
-      })
+  ChartHandler({target}){
+    this.setState({
+      chartStatus:true
+    })
+
   }
+
+  ParameterInputHandler({target}){
+    this.setState({
+      [target.name]:target.value
+    })
+}
 
   ReportHandler({target}){
       axios.get('/report', {
@@ -157,8 +171,9 @@ class App extends React.Component {
             report:results.data,
             reportStatus:true,
             entryStatus:false,
-            entryReady:false
-
+            entryReady:false,
+            chartReady:true,
+            chartStatus:false
           })
         }
       })
@@ -197,7 +212,7 @@ class App extends React.Component {
         <button onClick={this.MappingloadHandler}>Mapping</button>
         <a>Generate Report</a>
         <button onClick={this.ReportHandler}>Here</button>
-
+        {this.state.chartReady&&<button onClick={this.ChartHandler}>Show Chart!</button>}
 
         { this.state.entryStatus &&<Transactions
           transactions = {this.state.transactions}
@@ -210,6 +225,10 @@ class App extends React.Component {
         {this.state.reportStatus &&<Reports
           report = {this.state.report}
           CalculateTotal={this.TotalCalculateHandler}
+          />}
+
+       {this.state.chartStatus &&<Charts
+          report = {this.state.report}
           />}
 
         {this.state.entryReady && <div>
