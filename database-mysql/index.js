@@ -76,16 +76,18 @@ const getGL = function(param, callback) {
   param = param[0];
   let clause = `General_ledger.entryDate like '%${param.entryDate}%'`;
   if(param.customer){
-    clause += ` AND General_ledger.customer IN (SELECT id FROM customers WHERE name = '${param.customer}')`
+    clause += ` AND customers.name = '${param.customer}'`
   };
   if(param.type){
-    clause += ` AND General_ledger.GL IN (SELECT id FROM GLs WHERE name = '${param.type}')`
+    clause += ` AND GLs.name = '${param.type}'`
   };
 
-  let selectMessage = `SELECT customers.name, GLs.name, General_ledger.entryDate,sum(General_ledger.amount) FROM customers, GLs, General_ledger where ${clause} GROUP BY customers.name, General_ledger.entryDate, GLs.name;`
+  let selectMessage = `SELECT customers.name, GLs.name, General_ledger.entryDate,sum(General_ledger.amount) FROM General_ledger 
+      INNER JOIN customers ON customers.id = General_ledger.customer 
+      INNER JOIN GLs ON GLs.id = General_ledger.GL
+      WHERE ${clause} GROUP BY customers.name, General_ledger.entryDate, GLs.name;`
 
   console.log(selectMessage)
-
   connection.query(selectMessage, (err, results) => {
     if(err) {
       callback(err, null);
