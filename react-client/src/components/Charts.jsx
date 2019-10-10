@@ -21,7 +21,6 @@ function Charts({data, year, month, customer}){
     }
   }
 
-
   data.forEach((item) => {
     if(customer === "-" || customer === ""){
       newData[item.name].customers.push(item.customerName);

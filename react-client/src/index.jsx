@@ -14,10 +14,32 @@ import ReactPaginate from 'react-paginate';
 const Body = styled.div`
   width: 80%;
   margin: 20px;
+  font-family: sans-serif,Helvetica, Arial,"Helvetica Neue";
+
 `;
 
 const InputBox = styled.div`
   display: flex;
+`;
+
+const Function = styled.div`
+  display: flex;
+`;
+
+const BookEntry = styled.div`
+  display: flex;
+`;
+
+const GenerateReport = styled.div`
+display: flex;
+`;
+
+const Desp = styled.div`
+Margin-right:5px;
+`;
+
+const Pair = styled.div`
+display: flex;
 `;
 
 class App extends React.Component {
@@ -202,7 +224,6 @@ class App extends React.Component {
         })
       }
     })
-
   }
 
 
@@ -218,26 +239,34 @@ class App extends React.Component {
       <h3>Cash Transactions</h3>
       <div>
         <InputBox>
-          <div>
-            <a>Starting Year</a><SelectForm name = {'year'} listing={['-', '2019', '2018', '2017', '2016']} value = {this.state.year} handler = {this.ParameterInputHandler}/>
-          </div>
-          <div>
-            <a>Starting Month</a><SelectForm name = {'month'} listing={['-','01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
-          </div>
-          <div>
-            <a>Customer Name</a><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
-          </div>
-          <div>
-            <a>Type</a><SelectForm name={'type'} value = {this.state.type} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
-          </div>
+          <Pair>
+            <Desp>Year</Desp><SelectForm name = {'year'} listing={['-', '2019', '2018', '2017', '2016']} value = {this.state.year} handler = {this.ParameterInputHandler}/>
+          </Pair>
+          <Pair>
+            <Desp>Month</Desp><SelectForm name = {'month'} listing={['-','01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
+          </Pair>
+          <Pair>
+            <Desp>Customer Name</Desp><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
+          </Pair>
+          <Pair>
+            <Desp>Type</Desp><SelectForm name={'type'} value = {this.state.type} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
+          </Pair>
         </InputBox>
+        <Function>
+          <Desp>Book a Entry</Desp>
+          <BookEntry>
+            <button onClick={this.DownloadHandler}>Download</button>
+            <button onClick={this.MappingloadHandler}>Mapping</button>
+          </BookEntry>
+        </Function>
+        <Function>
+          <Desp>Generate Report</Desp>
+          <GenerateReport>
+            <button onClick={this.ReportHandler}>Here</button>
+            {this.state.chartReady&&<button onClick={this.ChartHandler}>Show Chart!</button>}
+          </GenerateReport>
+        </Function>
 
-        <a>Book a Entry</a>
-        <button onClick={this.DownloadHandler}>Download</button>
-        <button onClick={this.MappingloadHandler}>Mapping</button>
-        <a>Generate Report</a>
-        <button onClick={this.ReportHandler}>Here</button>
-        {this.state.chartReady&&<button onClick={this.ChartHandler}>Show Chart!</button>}
 
         { this.state.entryStatus &&<Transactions
           transactions = {this.state.transactions}
