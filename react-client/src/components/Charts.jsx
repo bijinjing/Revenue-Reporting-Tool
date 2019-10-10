@@ -29,10 +29,10 @@ function Charts({data}){
 
   return(
     <div>
-        <h2>Charts</h2>
-        {newData.revenue.customers.length > 1 && <Chart type = {'chart'} name = {'revenue'} newData = {newData.revenue} date = {date}/>}
-        {newData.cash.customers.length > 1 && <Chart type = {'chart'} name = {'cash'} newData = {newData.cash} date = {date}/>}
-        {newData['accounts payable'].customers.length > 1 && <Chart type = {'chart'} name = {'payable'} newData = {newData['accounts payable']} date = {date}/>}
+        <h4>Charts</h4>
+        {newData.revenue.customers.length > 1 && <Chart type = {'chart'} name = {'Revenue'} newData = {newData.revenue} date = {date}/>}
+        {newData.cash.customers.length > 1 && <Chart type = {'chart'} name = {'Cash'} newData = {newData.cash} date = {date}/>}
+        {newData['accounts payable'].customers.length > 1 && <Chart type = {'chart'} name = {'Account Payable'} newData = {newData['accounts payable']} date = {date}/>}
         {newData.revenue.customers.length === 1 && newData.cash.customers.length === 1 && newData['accounts payable'].customers.length === 1 &&
             <Chart type = {'pie'} name = {'all'} newData = {data} date = {date}/>
         }

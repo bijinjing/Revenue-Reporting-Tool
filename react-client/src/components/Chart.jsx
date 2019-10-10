@@ -6,7 +6,7 @@ function Chart({newData,date,name,type}){
   let chartData;
   console.log('data',newData, 'type', type, '')
 
-  if(type = 'chart'){
+  if(type === 'chart'){
     chartData = {
       labels: newData.customers,
       datasets: [
@@ -47,7 +47,7 @@ function Chart({newData,date,name,type}){
       }]
     };
 
-    return <Pie data={chartData} />
+    return <Doughnut data={chartData} />
 
   }
 }

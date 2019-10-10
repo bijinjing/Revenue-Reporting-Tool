@@ -143,9 +143,12 @@ class App extends React.Component {
 
   ChartHandler({target}){
     this.setState({
-      chartStatus:true
+      chartStatus:true,
+      entryReady:false,
+      entryStatus:false,
+      reportStatus:false,
+      chartReady:false
     })
-
   }
 
   ParameterInputHandler({target}){
