@@ -9,7 +9,7 @@ import Customer from './components/Customer.jsx';
 import SelectForm from './components/SelectForm.jsx';
 import styled from 'styled-components';
 import axios from 'axios';
-
+import ReactPaginate from 'react-paginate';
 
 const Body = styled.div`
   width: 80%;
@@ -39,14 +39,16 @@ class App extends React.Component {
       entryReady:false,
       chartReady:false,
       chartStatus:false,
-      chartParam:{}
+      chartParam:{},
+      pageCount:0
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
     this.MappingloadHandler = this.MappingloadHandler.bind(this);
     this.PostSubledgerHandler = this.PostSubledgerHandler.bind(this);
     this.ReportHandler = this.ReportHandler.bind(this);
-    this.ChartHandler = this.ChartHandler.bind(this)
+    this.ChartHandler = this.ChartHandler.bind(this);
+    // this.handlePageClick = this.handlePageClick.bind(this)
   }
 
   componentDidMount(){
@@ -77,6 +79,7 @@ class App extends React.Component {
           transactions[id] = {repId, description, amount, date};
           totalCash += amount;
         })
+        let pageCount = Math.ceil(data.length / 10)
         this.setState({
           totalCash,
           transactions,
@@ -87,7 +90,8 @@ class App extends React.Component {
           reportStatus:false,
           chartReady:false,
           chartStatus:false,
-          chartParam:{}
+          chartParam:{},
+          pageCount
         })
       })
      .catch((err) => {
@@ -128,20 +132,20 @@ class App extends React.Component {
       })
   }
 
+
   PostSubledgerHandler() {
     axios.post('/subLedger', {
       params: {
-                transactions:this.state.transactions,
-                mappedTransactions:this.state.mappedTransactions
-              }
+        transactions:this.state.transactions,
+        mappedTransactions:this.state.mappedTransactions
+      }
     })
-      .then((results) => {
-        console.log(results.data);
-        alert(results.data)
-        this.setState({
-          entryReady:false
-        })
+    .then((results) => {
+      alert(results.data)
+      this.setState({
+        entryReady:false
       })
+    })
   }
 
 
@@ -170,32 +174,34 @@ class App extends React.Component {
       chartReady:false,
       chartStatus:false
     })
-}
+  }
 
   ReportHandler({target}){
-      axios.get('/report', {
+    axios.get('/report', {
       params: {
-                year:this.state.year,
-                month:this.state.month,
-                customer:this.state.customer,
-                type:this.state.type,
-                chartParam:{}
-              }
+        year:this.state.year,
+        month:this.state.month,
+        customer:this.state.customer,
+        type:this.state.type,
+        chartParam:{}
+      }
     })
-      .then((results) => {
-        if(results.data.length === 0){
-          alert('No data avaiable, please update the filters!')
-        } else {
-          this.setState({
-            report:results.data,
-            reportStatus:true,
-            entryStatus:false,
-            entryReady:false,
-            chartReady:true,
-            chartStatus:false
-          })
-        }
-      })
+    .then((results) => {
+      if(results.data.length === 0){
+        alert('No data avaiable, please update the filters!')
+      } else {
+        let pageCount = Math.ceil(results.data.length  / 10)
+        this.setState({
+          report:results.data,
+          reportStatus:true,
+          entryStatus:false,
+          entryReady:false,
+          chartReady:true,
+          chartStatus:false,
+          pageCount
+        })
+      }
+    })
 
   }
 
@@ -208,7 +214,7 @@ class App extends React.Component {
 
   render () {
     return (
-    <Body>
+      <Body>
       <h3>Cash Transactions</h3>
       <div>
         <InputBox>
@@ -261,3 +267,25 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
+
+{/* <ReactPaginate
+    previousLabel={'previous'}
+    nextLabel={'next'}
+    breakLabel={'...'}
+    breakClassName={'break-me'}
+    pageCount={this.state.pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={3}
+    onPageChange={this.handlePageClick}
+    containerClassName={'pagination'}
+    subContainerClassName={'pages pagination'}
+    activeClassName={'active'}
+  /> */}
+
+  // handlePageClick(data){
+  //   let selected = data.selected;
+  //   let offset = Math.ceil(selected * this.props.perPage);
+  //   this.setState({ offset: offset }, () => {
+  //     this.loadCommentsFromServer();
+  //   });
+  // }

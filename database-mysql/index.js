@@ -73,9 +73,7 @@ const postGL = function(param, callback) {
 };
 
 const getGL = function(param, callback) {
-
   param = param[0];
-  console.log("pra,",param)
   let clause = `General_ledger.entryDate like '%${param.entryDate}%'`;
   if(param.customer){
     clause += ` AND customers.customerName = '${param.customer}'`
@@ -89,7 +87,6 @@ const getGL = function(param, callback) {
       INNER JOIN GLs ON GLs.id = General_ledger.GL
       WHERE ${clause} GROUP BY customers.customerName, General_ledger.entryDate, GLs.name;`
 
-  console.log(selectMessage)
   connection.query(selectMessage, (err, results) => {
     if(err) {
       callback(err, null);
@@ -110,38 +107,6 @@ const deleteGL = function(callback) {
   });
 };
 
-//update
-const updateGL = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
-};
-
-//update
-const addCustomer = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
-};
-
-//update
-const addFilterToExistingCustomer = function(callback) {
-  connection.query('SELECT * FROM items', function(err, results, fields) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, results);
-    }
-  });
-};
 
 module.exports = {
   getTransactions,
