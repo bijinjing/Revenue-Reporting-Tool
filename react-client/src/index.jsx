@@ -228,7 +228,7 @@ class App extends React.Component {
           />}
 
        {this.state.chartStatus &&<Charts
-          report = {this.state.report}
+          data = {this.state.report}
           />}
 
         {this.state.entryReady && <div>

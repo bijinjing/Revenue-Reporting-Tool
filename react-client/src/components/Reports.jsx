@@ -61,8 +61,7 @@ const Line = ({line,id}) => (
     <Data>{line.customerName}</Data>
     <Data>{line.name}</Data>
     <Data>{line.entryDate}</Data>
-    {line.name === "revenue"?<Data>{'$' + (-line['sum(General_ledger.amount)']).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>:
-    <Data>{'$' + (line['sum(General_ledger.amount)']).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>}
+    <Data>{'$' + (line['ABS(sum(General_ledger.amount))']).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
   </BankData>
   )
 )

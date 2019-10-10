@@ -3,7 +3,8 @@ import {Doughnut} from 'react-chartjs-2';
 import {HorizontalBar} from 'react-chartjs-2';
 
 function Chart({newData,date,name,type}){
-  let chartData
+  let chartData;
+  console.log('data',newData, 'type', type, '')
 
   if(type = 'chart'){
     chartData = {
@@ -23,7 +24,7 @@ function Chart({newData,date,name,type}){
     return <HorizontalBar data={chartData} />
   } else {
     let amounts = newData.map((item) => {
-      return item['sum(General_ledger.amount)']
+      return item['ABS(sum(General_ledger.amount))']
     })
     chartData = {
       labels: [
