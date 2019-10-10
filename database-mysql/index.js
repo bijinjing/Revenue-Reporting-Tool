@@ -73,7 +73,9 @@ const postGL = function(param, callback) {
 };
 
 const getGL = function(param, callback) {
+
   param = param[0];
+  console.log("pra,",param)
   let clause = `General_ledger.entryDate like '%${param.entryDate}%'`;
   if(param.customer){
     clause += ` AND customers.customerName = '${param.customer}'`

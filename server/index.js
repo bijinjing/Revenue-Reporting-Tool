@@ -72,23 +72,33 @@ app.post('/subLedger', (req, res, next)=> {
   let trxArr = Object.keys(transactions);
   let lastIndex = trxArr.length - 1;
 
-  trxArr.forEach((id,key) => {
-    let {amount} = transactions[id];
-    let {revenue, payable, customerId} = mappedTransactions[id];
-    let param = [[entryId,id,customerId,postDate,entryDate,100,amount],[entryId,id,customerId,postDate,entryDate,200,payable],[entryId,id,customerId,postDate,entryDate,600, -revenue]]
+  db.getGL([{entryDate}],(err,data) => {
+    if(err){
+      console.log(err);
+      res.sendStatus(500)
+    } else if(data.length > 0){
+      res.send("Entry exists. Please change a month")
+    } else {
+      trxArr.forEach((id,key) => {
+        let {amount} = transactions[id];
+        let {revenue, payable, customerId} = mappedTransactions[id];
+        let param = [[entryId,id,customerId,postDate,entryDate,100,amount],[entryId,id,customerId,postDate,entryDate,200,payable],[entryId,id,customerId,postDate,entryDate,600, -revenue]]
 
-    db.postGL(param, (err,results) => {
-      if(err) {
-        console.log(err);
-        res.sendStatus(500);
-        next();
-      } else {
-        if(lastIndex === key){
-          res.sendStatus(200);
-        }
-      }
-    })
+        db.postGL(param, (err,results) => {
+          if(err) {
+            console.log(err);
+            res.sendStatus(500);
+            next();
+          } else {
+            if(lastIndex === key){
+              res.send("The entry is successfully booked");
+            }
+          }
+        })
+      })
+    }
   })
+
 })
 
 app.get('/report', (req, res) =>{

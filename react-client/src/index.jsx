@@ -38,7 +38,8 @@ class App extends React.Component {
       entryStatus:false,
       entryReady:false,
       chartReady:false,
-      chartStatus:false
+      chartStatus:false,
+      chartParam:{}
     }
     this.DownloadHandler = this.DownloadHandler.bind(this);
     this.ParameterInputHandler = this.ParameterInputHandler.bind(this);
@@ -85,7 +86,8 @@ class App extends React.Component {
           entryStatus:true,
           reportStatus:false,
           chartReady:false,
-          chartStatus:false
+          chartStatus:false,
+          chartParam:{}
         })
       })
      .catch((err) => {
@@ -120,7 +122,8 @@ class App extends React.Component {
           entryStatus:true,
           reportStatus:false,
           chartReady:false,
-          chartStatus:false
+          chartStatus:false,
+          chartParam:{}
         })
       })
   }
@@ -134,6 +137,7 @@ class App extends React.Component {
     })
       .then((results) => {
         console.log(results.data);
+        alert(results.data)
         this.setState({
           entryReady:false
         })
@@ -142,18 +146,29 @@ class App extends React.Component {
 
 
   ChartHandler({target}){
-    this.setState({
-      chartStatus:true,
-      entryReady:false,
-      entryStatus:false,
-      reportStatus:false,
-      chartReady:false
-    })
+    if((this.state.month === "-"|| this.state.month === "" )&& (this.state.customer === "-" || this.state.customer === "")){
+      alert ("Please select at least one cutomer or one month!")
+    } else {
+      let chartParam = {};
+      chartParam.year = this.state.year;
+      chartParam.month = this.state.month;
+      chartParam.customer = this.state.customer
+      this.setState({
+        chartParam,
+        chartStatus:true,
+        entryReady:false,
+        entryStatus:false,
+        reportStatus:false,
+        chartReady:false
+      })
+    }
   }
 
   ParameterInputHandler({target}){
     this.setState({
-      [target.name]:target.value
+      [target.name]:target.value,
+      chartReady:false,
+      chartStatus:false
     })
 }
 
@@ -163,7 +178,8 @@ class App extends React.Component {
                 year:this.state.year,
                 month:this.state.month,
                 customer:this.state.customer,
-                type:this.state.type
+                type:this.state.type,
+                chartParam:{}
               }
     })
       .then((results) => {
@@ -231,7 +247,7 @@ class App extends React.Component {
           />}
 
        {this.state.chartStatus &&<Charts
-          data = {this.state.report}
+          data = {this.state.report} year = {this.state.chartParam.year} month = {this.state.chartParam.month} customer = {this.state.chartParam.customer}
           />}
 
         {this.state.entryReady && <div>
