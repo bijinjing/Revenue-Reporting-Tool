@@ -22,33 +22,8 @@ const TableButtom = styled.div`
   white-space: normal;
 `;
 
-const Table = styled.div`
-  flex-flow: column nowrap;
-  font-size: .8rem;
-  margin: 0.5rem;
-  line-height: 1.5;
-  flex: 1 1 auto;
-`;
 
-const Data = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  flex-grow: 1;
-  flex-basis: 0;
-  padding: 0.5em;
-  word-break: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0px;
-  white-space: nowrap;
-  border-bottom: 1px solid #d0d0d0;
-`;
 
-const BankData = styled.div`
-  display: flex;
-  background-color:light-gray;
-  width: 50%;
-`;
 
 const MappingData = styled.div`
   display: flex;
@@ -58,21 +33,21 @@ const MappingData = styled.div`
 
 const Transactions = ({transactions, mappedTransactions,totalCash, totalRevenue, CalculateTotal}) => {
   return (
-    <Table>
-      <TableHeader>
-        <BankData>
-          <Data>ID</Data>
-          <Data>Description</Data>
-          <Data>Cash Received</Data>
-          <Data>Date</Data>
-        </BankData>
-        <MappingData>
-          <Data>Customer</Data>
-          <Data>Fee Rate (%)</Data>
-          <Data>Revenue Earned</Data>
-          <Data>Payable</Data>
-        </MappingData>
-      </TableHeader>
+    <div className="txn-table">
+      <div className="txn-row">
+        <div className="bank-data">
+          <div className="txn-data txn-id">ID</div>
+          <div className="txn-data txn-desc">Description</div>
+          <div className="txn-data">Cash Received</div>
+          <div className="txn-data">Date</div>
+        </div>
+        <div className="bank-data">
+          <div className="txn-data">Customer</div>
+          <div className="txn-data">Fee Rate (%)</div>
+          <div className="txn-data">Revenue Earned</div>
+          <div className="txn-data">Payable</div>
+        </div>
+      </div>
   { Object.keys(transactions).map((id,key) => {
       return <Transaction trx={transactions[id]} mapping={mappedTransactions[id]?mappedTransactions[id]:{customer:"",feeRate:0,revenue:0,payable:0}}/>})}
        <TableButtom>
@@ -89,7 +64,7 @@ const Transactions = ({transactions, mappedTransactions,totalCash, totalRevenue,
           <Data>{'$' + (totalCash - totalRevenue).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString()}</Data>
         </MappingData>
       </TableButtom>
-    </Table>
+    </div>
   )
 }
 
