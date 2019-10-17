@@ -1,13 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 
 body {
-  font-family:'Montserrat',sans-serif;
+  width: 80%;
+  margin: 20px;
+  font-family:sans-serif,Helvetica, Arial,"Helvetica Neue";
 }
 
 h1 {
   margin: 20px;
-  color: #00a07b;
+  color: #111312;
 }
+
 
 .app {
   display: flex;
@@ -58,7 +61,7 @@ h1 {
 }
 
 .txn-row:hover {
-  color: #00a07b;
+  color: #a02d00;
 }
 
 .txn-data {
@@ -80,29 +83,37 @@ h1 {
 }
 
 .txn-desc {
-  min-width:200px;
+  min-width:300px;
 }
 
+.txn-center {
+  display: flex;
+  justify-content: center;
+}
+.txn-right {
+  display: flex;
+  text-align: right;
+}
 .bank-data {
   display: flex;
   width: 50%;
 }
 
-/* .category-list {
-  background-color: #00a07b;
-  color: white;
-  margin-top: 50px;
+.MappingData {
+  display: flex;
+  background-color:white;
+  width: 50%;
 }
 
-.category-data {
-  padding: 0.5em;
-  word-break: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0px;
-  white-space: nowrap;
-} */
-
+.TableButtom {
+  display: block;
+  font-weight: 700;
+  background-color: #f2f2f2;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  white-space: normal;
+}
 
 select {
   float:right;
@@ -111,23 +122,6 @@ select {
   background:0;color:#5a5a6e;
   cursor:pointer;
   transition:all .3s;
-}
-
-input {
-  width:100%;
-  padding:10px;
-  box-sizing:border-box;
-  background:none;
-  outline:none;
-  resize:none;
-  border:0;
-  font-family:'Montserrat',sans-serif;
-  transition:all .3s;
-  border-bottom:2px solid #d0d0d0;
-}
-
-input:focus {
-  border-bottom:2px solid #00a07b;
 }
 
 button {
@@ -145,10 +139,4 @@ button:hover {
   background:#00a07b;
   color:#fff;
   border: 2px solid #00a07b;
-}
-
-.category-form {
-  margin-top: 2px;
-  display: flex;
-  flex-flow: column;
 }

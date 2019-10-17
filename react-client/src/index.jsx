@@ -235,62 +235,62 @@ class App extends React.Component {
 
   render () {
     return (
-      <Body>
-      <h3>Cash Transactions</h3>
       <div>
-        <InputBox>
-          <Pair>
-            <Desp>Year</Desp><SelectForm name = {'year'} listing={['-', '2019', '2018', '2017', '2016']} value = {this.state.year} handler = {this.ParameterInputHandler}/>
-          </Pair>
-          <Pair>
-            <Desp>Month</Desp><SelectForm name = {'month'} listing={['-','01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
-          </Pair>
-          <Pair>
-            <Desp>Customer Name</Desp><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
-          </Pair>
-          <Pair>
-            <Desp>Type</Desp><SelectForm name={'type'} value = {this.state.type} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
-          </Pair>
-        </InputBox>
-        <Function>
-          <Desp>Book a Entry</Desp>
-          <BookEntry>
-            <button onClick={this.DownloadHandler}>Download</button>
-            <button onClick={this.MappingloadHandler}>Mapping</button>
-          </BookEntry>
-        </Function>
-        <Function>
-          <Desp>Generate Report</Desp>
-          <GenerateReport>
-            <button onClick={this.ReportHandler}>Here</button>
-            {this.state.chartReady&&<button onClick={this.ChartHandler}>Show Chart!</button>}
-          </GenerateReport>
-        </Function>
+        <h3>Cash Transactions</h3>
+        <div>
+          <div>
+            <div>
+              <div>Year</div><SelectForm name = {'year'} listing={['-', '2019', '2018', '2017', '2016']} value = {this.state.year} handler = {this.ParameterInputHandler}/>
+            </div>
+            <div>
+              <div>Month</div><SelectForm name = {'month'} listing={['-','01','02','03','04','05','06','07','08','09','10','11','12']} value ={this.state.month} handler = {this.ParameterInputHandler}/>
+            </div>
+            <div>
+              <div>Customer Name</div><SelectForm name = {'customer'} value = {this.state.customer} listing={this.state.customers} handler = {this.ParameterInputHandler}/>
+            </div>
+            <div>
+              <div>Type</div><SelectForm name={'type'} value = {this.state.type} handler = {this.ParameterInputHandler} listing={['-','Revenue', 'Cash','Accounts Payable']}/>
+            </div>
+          </div>
+          <div>
+            <div>Book a Entry</div>
+            <div>
+              <button onClick={this.DownloadHandler}>Download</button>
+              <button onClick={this.MappingloadHandler}>Mapping</button>
+            </div>
+          </div>
+          <div>
+            <div>Generate Report</div>
+            <div>
+              <button onClick={this.ReportHandler}>Here</button>
+              {this.state.chartReady&&<button onClick={this.ChartHandler}>Show Chart!</button>}
+            </div>
+          </div>
 
 
-        { this.state.entryStatus &&<Transactions
-          transactions = {this.state.transactions}
-          mappedTransactions = {this.state.mappedTransactions}
-          totalCash={this.state.totalCash}
-          totalRevenue={this.state.totalRevenue}
-          CalculateTotal={this.TotalCalculateHandler}
-          />}
+          { this.state.entryStatus &&<Transactions
+            transactions = {this.state.transactions}
+            mappedTransactions = {this.state.mappedTransactions}
+            totalCash={this.state.totalCash}
+            totalRevenue={this.state.totalRevenue}
+            CalculateTotal={this.TotalCalculateHandler}
+            />}
 
-        {this.state.reportStatus &&<Reports
-          report = {this.state.report}
-          CalculateTotal={this.TotalCalculateHandler}
-          />}
+          {this.state.reportStatus &&<Reports
+            report = {this.state.report}
+            CalculateTotal={this.TotalCalculateHandler}
+            />}
 
-       {this.state.chartStatus &&<Charts
-          data = {this.state.report} year = {this.state.chartParam.year} month = {this.state.chartParam.month} customer = {this.state.chartParam.customer}
-          />}
+        {this.state.chartStatus &&<Charts
+            data = {this.state.report} year = {this.state.chartParam.year} month = {this.state.chartParam.month} customer = {this.state.chartParam.customer}
+            />}
 
-        {this.state.entryReady && <div>
-          <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
-          <button onClick={this.PostSubledgerHandler}>Post Entry</button>
-        </div>}
-      </div>
-    </Body>
+          {this.state.entryReady && <div>
+            <JournalEntry cash={this.state.totalCash} revenue={this.state.totalRevenue}/>
+            <button onClick={this.PostSubledgerHandler}>Post Entry</button>
+          </div>}
+        </div>
+     </div>
     )
   }
 }
